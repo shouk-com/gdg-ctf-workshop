@@ -1,0 +1,204 @@
+<!-- FLAG{intr0_t0_insp3ct}-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.js"></script>
+    <title>Secret Todo List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        #todoInput {
+            width: 70%;
+            padding: 10px;
+            margin-right: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        #addBtn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #addBtn:hover {
+            background-color: #45a049;
+        }
+
+        #todoList {
+            list-style: none;
+            padding: 0;
+        }
+
+        #todoList li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+        }
+
+        .delete-btn {
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background-color: #cc0000;
+        }
+
+        #secretMessage {
+            display: none;
+            color: #ff0000;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+            animation: shake 0.1s 1s;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+        /* Define the rotation animation */
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Apply the animation to all elements */
+        .party-mode * {
+            animation: rotate 0.5s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Secret Todo List 🔒</h1>
+        <div>
+            <input type="text" id="todoInput" placeholder="Enter a new task...">
+            <button id="addBtn">Add Task</button>
+        </div>
+        <ul id="todoList"></ul>
+    </div>
+    <div id="secretMessage">mmm</div>
+
+    <script>
+        const todoInput = document.getElementById('todoInput');
+        const addBtn = document.getElementById('addBtn');
+        const todoList = document.getElementById('todoList');
+        const secretMessage = document.getElementById('secretMessage');
+
+        function addTodo() {
+            const todoText = todoInput.value.trim();
+            if (!todoText) return;
+
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <span>${todoText}</span>
+                <button class="delete-btn">X</button>
+            `;
+
+            li.querySelector('.delete-btn').addEventListener('click', () => {
+                li.remove();
+                checkSecret();
+            });
+
+            todoList.appendChild(li);
+            todoInput.value = '';
+            
+            checkSecret();
+        }
+
+        function checkSecret() {
+            const todos = Array.from(document.querySelectorAll('#todoList span'));
+            let key = '';
+            const hasSecret = todos.some((todo) => {
+                const res = CryptoJS.MD5(todo.textContent).toString() === "5d7845ac6ee7cfffafc5fe5f35cf666d";
+                if (res) {
+                    key = todo.textContent;
+                }
+                return res;
+            });
+
+            secretMessage.style.display = hasSecret ? 'block' : 'none';
+            if (hasSecret) {
+                secretMessage.innerHTML = "SECRET FOUND! Decoding flag...<br>" + decodeflag(key);
+            } else {
+                secretMessage.innerHTML = ''; 
+            }
+        }
+
+        function decodeflag(key) {
+            // Encoded byte array
+            const encodedByteArray = [53, 41, 34, 53, 30, 57, 85, 7, 108, 66, 80, 60, 28, 85, 0, 110, 65, 0, 16, 16, 17, 65, 24];
+            const result = [];
+
+            for (let i = 0; i < encodedByteArray.length; i++) {
+                result.push(encodedByteArray[i] ^ key.charCodeAt(i % key.length));
+            }
+
+            return String.fromCharCode(...result);
+        }
+
+        addBtn.addEventListener('click', addTodo);
+        todoInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTodo();
+        });
+
+        function startPartyMode() {
+            // Add the 'party-mode' class to the body to start the animation
+            document.body.classList.add('party-mode');
+
+            // Remove the 'party-mode' class after 2 seconds
+            setTimeout(() => {
+                document.body.classList.remove('party-mode');
+            }, 2000);
+        }
+    </script>
+    <!-- TODO finish server file (/server.py) -->
+</body>
+</html>
