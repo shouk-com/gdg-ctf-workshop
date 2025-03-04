@@ -11,7 +11,7 @@ questions = [
         ]
     },
     {
-        "title": "Web Shenanigans",
+        "title": "W3b Shenanigans",
         "description": "I have hidden secrets on the website, try to find them...",
         "link": "https://gdg-worksop-web.vercel.app/",  # File in your project directory
         "sub_questions": [
@@ -21,7 +21,7 @@ questions = [
         ]
     },
     {
-        "title": "Reversing Reversal",
+        "title": "JAVAVAVA",
         "description": "I seem to have stumbled on the password checking system, can you decode it for me.",
         "file": "./att/q2-rev/Password.java", 
         "sub_questions": [
@@ -34,7 +34,7 @@ questions = [
         "description": "beep boop beeeeep.",
         "file": "./att/q4-audio/galactus.wav", 
         "sub_questions": [
-            {"question": "Encoded Audio 0.0", "answers": ["sp3ctral_an41lysis", "FLAG{sp3ctral_an41lysis}"]},
+            {"question": "Encoded Audio 0.0", "answers": ["sp3ctral_an41lysis", "FLAG{sp3ctral_an41lysis}", "FLAG{SP3CTRAL_AN41LYSIS}", "SP3CTRAL_AN41LYSIS"]},
         ]
     },
     {
